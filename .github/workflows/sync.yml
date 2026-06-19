@@ -1,0 +1,22 @@
+name: Continuous Deployment Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-to-huggingface:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Force Push Mirror to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        # NOTE: Make sure to replace 'mesi-dev' and 'your-space-name' 
+        # with your exact Hugging Face username and Space name respectively!
+        run: git push --force https://mesi-dev:$HF_TOKEN@huggingface.co/spaces/mesi-dev/tech-stack-advisor main
