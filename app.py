@@ -24,14 +24,14 @@ st.markdown("""
 st.title("🧠 Advanced AI & Systems Architecture Advisor")
 st.markdown("---")
 
-# 2. Secure API Client Initialization via LangChain Environment Setup
+# 2. Secure API Client Initialization
 api_key = os.environ.get("GOOGLE_API_KEY")
 
 if not api_key:
     st.error("🔒 Security Key Error: GOOGLE_API_KEY environment variable missing from Cloud Provider Secrets.")
     st.stop()
 
-# Initialize the modern LangChain Gemini LLM wrapper
+# Initialize the underlying AI engine
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     google_api_key=api_key,
@@ -79,12 +79,13 @@ user_prompt = st.text_area(
     placeholder="e.g., Designing an isolated, data-driven Learning Analytics ecosystem for higher education institutions. Requires tracking student telemetry without sending raw data to external servers, using localized vector embeddings, and maintaining a strict PostgreSQL system datastore..."
 )
 
-# 5. Core Execution Engine (LangChain Expression Language Pipeline)
+# 5. Core Execution Engine (With Real-Time Streaming Output)
 if st.button("Compile Architectural Strategy Blueprint", type="primary"):
     if not user_prompt.strip():
         st.warning("Please input project parameters or technical specifications before compiling.")
     else:
-        with st.spinner("Analyzing structural constraints via LangChain pipeline..."):
+        # Generic status wrapper that gives zero hint about the code stack
+        with st.spinner("Analyzing structural constraints and compiling strategy..."):
             try:
                 # Rigorous engineering system template targeting your exact constraints
                 prompt_template = ChatPromptTemplate.from_messages([
@@ -116,18 +117,19 @@ if st.button("Compile Architectural Strategy Blueprint", type="primary"):
                     ))
                 ])
 
-                # Build and invoke the LangChain pipeline chain
+                # Build the execution pipeline
                 chain = prompt_template | llm | StrOutputParser()
 
-                blueprint_output = chain.invoke({
+                st.success("✨ Architectural Strategy:")
+                
+                # Use .stream() and st.write_stream to make text stream down the page instantly
+                st.write_stream(chain.stream({
                     "paradigm": app_paradigm,
                     "scale": scale_tier,
                     "privacy": privacy_level,
                     "requirements": user_prompt
-                })
-
-                st.success("✨ Architectural Strategy Successfully Compiled!")
-                st.markdown(blueprint_output)
+                }))
 
             except Exception as e:
-                st.error(f"An exception occurred inside the LangChain execution loop: {e}")
+                # Clean, unexposed professional error handling
+                st.error("An interruption occurred while communicating with the engine. Please check your network connection or try again.")
